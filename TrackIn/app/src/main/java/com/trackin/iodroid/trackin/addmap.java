@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class addmap extends FragmentActivity implements OnMapReadyCallback,OnMapClickListener {
+public class addmap extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -72,17 +72,20 @@ public class addmap extends FragmentActivity implements OnMapReadyCallback,OnMap
         List<Address> addresses = null;
         try {
             addresses = geocoder.getFromLocationName(addre, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
         double r_lat=(double)(addresses.get(0).getLatitude());
         double r_long=(double)(addresses.get(0).getLongitude());
         LatLng mark = new LatLng(r_lat, r_long);
         CircleOptions circleoptions=new CircleOptions().strokeWidth(2).strokeColor(Color.BLUE).fillColor(Color.parseColor("#500084d3"));
-        mMap.addMarker(new MarkerOptions().position(mark).title(""+r_lat+" and "+r_long));
+        mMap.addMarker(new MarkerOptions().position(mark).title(getAddress(mark)));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(mark));
         Circle circle=mMap.addCircle(circleoptions.center(mark).radius(5000.0));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(circleoptions.getCenter(),getZoomLevel(circle)));
+        final TextView textViewToChange = (TextView) findViewById(R.id.cord);
+        textViewToChange.setText("Lattitude:"+r_lat+"\nLongitude"+r_long);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     public String getAddress(LatLng point)
     {
@@ -92,11 +95,6 @@ public class addmap extends FragmentActivity implements OnMapReadyCallback,OnMap
         try {
             addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
             String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            String city = addresses.get(0).getLocality();
-            String state = addresses.get(0).getAdminArea();
-            String country = addresses.get(0).getCountryName();
-            String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName();
             return address;
         }
         catch(Exception e)
@@ -104,20 +102,6 @@ public class addmap extends FragmentActivity implements OnMapReadyCallback,OnMap
             Toast.makeText(addmap.this,"GPS not enabled!",Toast.LENGTH_LONG);
         }
         return "Invalid Location";
-    }
-    @Override
-    public void onMapClick(LatLng point) {
-        mMap.clear();
-        TextView cordText = new TextView(this);
-        cordText=(TextView)findViewById(R.id.cord);
-        CircleOptions circleoptions=new CircleOptions().strokeWidth(2).strokeColor(Color.BLUE).fillColor(Color.parseColor("#500084d3"));
-        mMap.addMarker(new MarkerOptions().position(point).title(getAddress(point)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(point));
-        cordText.setText("Lattitude: "+point.latitude+"\n"+"Longitude: "+point.longitude);
-        Circle circle=mMap.addCircle(circleoptions.center(point).radius(5000.0));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(circleoptions.getCenter(),getZoomLevel(circle)));
-        final TextView textViewToChange = (TextView) findViewById(R.id.cord);
-        textViewToChange.setText("Latittude:"+point.latitude+"/nLongitude"+point.longitude);
     }
 
     // Keys for storing activity state.

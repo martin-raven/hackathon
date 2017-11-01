@@ -39,26 +39,5 @@ public class AddressActivity extends AppCompatActivity {
         intent1.putExtras(bundle);
         startActivity(intent1);
     }
-    public String getAddress(LatLng point)
-    {
-        Geocoder geocoder;
-        List<Address> addresses;
-        geocoder = new Geocoder(this, Locale.getDefault());
-        try {
-            addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            String city = addresses.get(0).getLocality();
-            String state = addresses.get(0).getAdminArea();
-            String country = addresses.get(0).getCountryName();
-            String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName();
-            return address;
-        }
-        catch(Exception e)
-        {
-            Toast.makeText(AddressActivity.this,"GPS not enabled!",Toast.LENGTH_LONG);
-        }
-        return "Invalid Location";
-    }
 }
 

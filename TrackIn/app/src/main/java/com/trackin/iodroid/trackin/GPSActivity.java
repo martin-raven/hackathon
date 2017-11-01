@@ -37,13 +37,12 @@ import java.util.List;
 import java.util.Locale;
 
 public class GPSActivity extends FragmentActivity implements OnMapReadyCallback, OnMapClickListener {
-    private Boolean mLocationPermissionGranted = false;
     private GoogleMap mMap;
-    private TextView mTapTextView;
     private Location mLocation;
     private  com.trackin.iodroid.trackin.GPSTracker gpsTracker;
     double latitude, longitude;
     double lat, lng;
+    int entry=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +55,6 @@ public class GPSActivity extends FragmentActivity implements OnMapReadyCallback,
 
             latitude = mLocation.getLatitude();
             longitude = mLocation.getLongitude();
-          /*  Geocoder geocoder = new Geocoder(this);
-            geocoder.get*/
-            // Obtain the SupportMapFragment and get notified when the map is ready to be used.
             SupportMapFragment
                     mapFragment = (SupportMapFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.map);
@@ -66,9 +62,9 @@ public class GPSActivity extends FragmentActivity implements OnMapReadyCallback,
             System.out.println("60");
             lat = gpsTracker.getLocation().getLatitude();
             lng = gpsTracker.getLocation().getLongitude();
-
+            Toast.makeText(GPSActivity.this,"Click on map to refresh location!",Toast.LENGTH_LONG).show();
         } catch (Exception e) {
-            Toast.makeText(GPSActivity.this,"GPS not enabled!",Toast.LENGTH_LONG);
+            Toast.makeText(GPSActivity.this,"GPS not enabled!",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -97,7 +93,23 @@ public class GPSActivity extends FragmentActivity implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnMapClickListener(this);
-        System.out.println("118");
+        if(entry==0)
+        {
+            mMap.clear();
+            System.out.println("125");
+            CircleOptions circleoptions = new CircleOptions().strokeWidth(2).strokeColor(Color.BLUE).fillColor(Color.parseColor("#500084d3"));
+            lat = gpsTracker.getLocation().getLatitude();
+            lng = gpsTracker.getLocation().getLongitude();
+            LatLng currloc = new LatLng(lat, lng);
+            mMap.addMarker(new MarkerOptions().position(currloc).title(getAddress(currloc)));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(currloc));
+            Circle circle = mMap.addCircle(circleoptions.center(currloc).radius(5000.0));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(circleoptions.getCenter(), getZoomLevel(circle)));
+            final TextView textViewToChange = (TextView) findViewById(R.id.cord);
+            textViewToChange.setText("Lattitude:"+lat+"\nLongitude"+lng);
+            entry=1;
+        }
+
     }
     public String getAddress(LatLng point)
     {
@@ -116,7 +128,7 @@ public class GPSActivity extends FragmentActivity implements OnMapReadyCallback,
         }
         catch(Exception e)
         {
-            Toast.makeText(GPSActivity.this,"GPS not enabled!",Toast.LENGTH_LONG);
+            Toast.makeText(GPSActivity.this,"GPS not enabled!",Toast.LENGTH_LONG).show();
         }
         return "Invalid Location";
     }
@@ -126,15 +138,6 @@ public class GPSActivity extends FragmentActivity implements OnMapReadyCallback,
         System.out.println("125");
         CircleOptions circleoptions = new CircleOptions().strokeWidth(2).strokeColor(Color.BLUE).fillColor(Color.parseColor("#500084d3"));
         try {
-
-            com.trackin.iodroid.trackin.GPSTracker gpsTracker = new com.trackin.iodroid.trackin.GPSTracker(getApplicationContext());
-            mLocation = gpsTracker.getLocation();
-
-            latitude = mLocation.getLatitude();
-            longitude = mLocation.getLongitude();
-          /*  Geocoder geocoder = new Geocoder(this);
-            geocoder.get*/
-            // Obtain the SupportMapFragment and get notified when the map is ready to be used.
             SupportMapFragment
                     mapFragment = (SupportMapFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.map);
@@ -147,8 +150,7 @@ public class GPSActivity extends FragmentActivity implements OnMapReadyCallback,
             Circle circle = mMap.addCircle(circleoptions.center(currloc).radius(5000.0));
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(circleoptions.getCenter(), getZoomLevel(circle)));
             final TextView textViewToChange = (TextView) findViewById(R.id.cord);
-            textViewToChange.setText("Latittude:"+point.latitude+"\nLongitude"+point.longitude);
-            System.out.println("149");
+            textViewToChange.setText("Lattitude:"+lat+"\nLongitude"+lng);
         } catch (Exception e) {
             //toast
 

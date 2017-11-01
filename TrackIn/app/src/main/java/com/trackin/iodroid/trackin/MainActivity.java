@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
     private void getLocationPermission() {
     /*
      * Request location permission, so that we can get the location of the
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLocationPermission();
+        Toast.makeText(MainActivity.this,"Make sure Data/WiFi is enabled!!",Toast.LENGTH_LONG).show();
         setContentView(R.layout.activity_main);
     }
         public void Track (View view) {

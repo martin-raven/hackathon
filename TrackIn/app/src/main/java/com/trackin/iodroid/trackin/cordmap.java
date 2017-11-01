@@ -38,16 +38,6 @@ public class cordmap extends FragmentActivity implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
     }
 
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     public String getAddress(LatLng point)
     {
         Geocoder geocoder;
@@ -55,19 +45,14 @@ public class cordmap extends FragmentActivity implements OnMapReadyCallback {
         geocoder = new Geocoder(this, Locale.getDefault());
         try {
             addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            String city = addresses.get(0).getLocality();
-            String state = addresses.get(0).getAdminArea();
-            String country = addresses.get(0).getCountryName();
-            String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName();
+            String address = addresses.get(0).getAddressLine(0);
             return address;
         }
         catch(Exception e)
         {
             Toast.makeText(cordmap.this,"GPS not enabled!",Toast.LENGTH_LONG);
         }
-        return "Invalid Location";
+        return "Unknown Location";
     }
     public int getZoomLevel(Circle circle)
     {
@@ -96,43 +81,9 @@ public class cordmap extends FragmentActivity implements OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(mark));
         Circle circle=mMap.addCircle(circleoptions.center(mark).radius(5000.0));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(circleoptions.getCenter(),getZoomLevel(circle)));
+        final TextView textViewToChange = (TextView) findViewById(R.id.cord);
+        textViewToChange.setText("Lattitude:"+r_lat+"\nLongitude"+r_long);
     }
-//    public String getAddress(LatLng point)
-//    {
-//        Geocoder geocoder;
-//        List<Address> addresses;
-//        geocoder = new Geocoder(this, Locale.getDefault());
-//        try {
-//            addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-//            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-//            String city = addresses.get(0).getLocality();
-//            String state = addresses.get(0).getAdminArea();
-//            String country = addresses.get(0).getCountryName();
-//            String postalCode = addresses.get(0).getPostalCode();
-//            String knownName = addresses.get(0).getFeatureName();
-//            return address;
-//        }
-//        catch(Exception e)
-//        {
-//            Toast.makeText(cordmap.this,"GPS not enabled!",Toast.LENGTH_LONG);
-//        }
-//        return "Invalid Location";
-//    }
-//    @Override
-//    public void onMapClick(LatLng point) {
-//        mMap.clear();
-//        TextView cordText = new TextView(this);
-//        cordText=(TextView)findViewById(R.id.cord);
-//        CircleOptions circleoptions=new CircleOptions().strokeWidth(2).strokeColor(Color.BLUE).fillColor(Color.parseColor("#500084d3"));
-//        mMap.addMarker(new MarkerOptions().position(point).title(getAddress(point)));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(point));
-//        cordText.setText("Lattitude: "+point.latitude+"\n"+"Longitude: "+point.longitude);
-//        Circle circle=mMap.addCircle(circleoptions.center(point).radius(5000.0));
-//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(circleoptions.getCenter(),getZoomLevel(circle)));
-//        final TextView textViewToChange = (TextView) findViewById(R.id.cord);
-//        textViewToChange.setText("Latittude:"+point.latitude+"/nLongitude"+point.longitude);
-//    }
-
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
